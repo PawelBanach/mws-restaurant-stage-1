@@ -1,4 +1,4 @@
-var staticCacheName = 'restaurant-reviews-static-3';
+var staticCacheName = 'restaurant-reviews-static-7';
 
 self.addEventListener('install', function(event) {
   var urlsToCache = [
@@ -36,14 +36,15 @@ self.addEventListener('install', function(event) {
   );
 });
 
-self.addEventListener('active', function(event) {
+self.addEventListener('activate', function(event) {
   event.waitUntil(
     caches.keys().then(function(cacheNames) {
-      return Promis.all(
+      return Promise.all(
         cacheNames.filter(function(cacheName) {
           return cacheName.startsWith('restaurant-') && cacheName != staticCacheName;
         }).map(function (cacheName) {
-          return cache.delete(cacheName);
+          console.log(cacheName);
+          return caches.delete(cacheName);
         })
       );
     })
