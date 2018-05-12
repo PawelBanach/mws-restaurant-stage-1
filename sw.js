@@ -1,4 +1,4 @@
-var staticCacheName = 'restaurant-reviews-static-7';
+var staticCacheName = 'restaurant-reviews-static-8';
 
 self.addEventListener('install', function(event) {
   var urlsToCache = [
@@ -13,7 +13,7 @@ self.addEventListener('install', function(event) {
     '/images/8-270_thumbnail.jpg',
     '/images/9-270_thumbnail.jpg',
     '/images/10-270_thumbnail.jpg',
-    // '/data/restaurants.json',
+    '/images/default.png',
     '/css/styles.css',
     '/js/dbhelper.js',
     '/js/main.js',
