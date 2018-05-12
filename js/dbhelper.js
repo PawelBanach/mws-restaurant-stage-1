@@ -16,11 +16,30 @@ class DBHelper {
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
+    DBHelper.showCachedRestaurants().then(function (restaurants) {
+      if (restaurants) callback(null, restaurants);
+      else { DBHelper.makeRequestForRestaurants(callback) }
+    });
+  }
+
+  /**
+   * Make request for all restaurants.
+   */
+  static makeRequestForRestaurants(callback) {
     let xhr = new XMLHttpRequest();
     xhr.open('GET', DBHelper.DATABASE_URL);
     xhr.onload = () => {
       if (xhr.status === 200) { // Got a success response from server!
         const restaurants = JSON.parse(xhr.responseText);
+        DBHelper.openDatabase().then(function (db) {
+          if (!db) { return; }
+          debugger;
+          let tx = db.transaction('restaurants', 'readwrite');
+          let store = tx.objectStore('restaurants');
+          restaurants.forEach(function (restaurant) {
+            store.put(restaurant);
+          });
+        });
         callback(null, restaurants);
       } else { // Oops!. Got an error from server.
         const error = (`Request failed. Returned status of ${xhr.status}`);
@@ -166,4 +185,34 @@ class DBHelper {
     return marker;
   }
 
+  /**
+  *  Open database
+  */
+  static openDatabase() {
+    if (!navigator.serviceWorker) {
+      return Promise.resolve();
+    }
+
+    return idb.open('restaurant', 1, function (upgradeDb) {
+      let store = upgradeDb.createObjectStore('restaurants', {
+        keyPath: 'id'
+      });
+      //store.createIndex('alphabetical', 'name');
+    });
+  }
+
+  /**
+   *  Read from database database
+   */
+  static showCachedRestaurants() {
+    return DBHelper.openDatabase().then(function (db) {
+      // nie wrzucaj jeżeli restaurants są już ustawione
+      if (!db) return;
+      let index = db.transaction('restaurants').objectStore('restaurants');
+
+      return index.getAll().then(function (restaurants) {
+        return restaurants;
+      });
+    });
+  }
 }
