@@ -1,0 +1,44 @@
+{
+  "name": "MWS Restaurant",
+  "short_name": "MWS",
+  "icons": [
+    {
+      "src": "images/mws-icon.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "density": 0.75
+    },
+    {
+      "src": "images/mws-icon.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "density": 0.75
+    },
+    {
+      "src": "images/mws-icon.png",
+      "sizes": "196x196",
+      "type": "image/png",
+      "density": 0.75
+    },
+    {
+      "src": "images/mws-icon.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "images/mws-icon.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "images/mws-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f3f3f3",
+  "theme_color": "#262932",
+  "orientation": "portrait"
+}

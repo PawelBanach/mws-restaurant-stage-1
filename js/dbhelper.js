@@ -8,7 +8,7 @@ class DBHelper {
    */
   static get DATABASE_URL() {
     const port = 1337;
-    return `http://localhost:${port}/restaurants`;
+    return `https://localhost:${port}/restaurants`;
   }
 
   /**
@@ -32,7 +32,6 @@ class DBHelper {
         const restaurants = JSON.parse(xhr.responseText);
         DBHelper.openDatabase().then(function (db) {
           if (!db) { return; }
-          debugger;
           let tx = db.transaction('restaurants', 'readwrite');
           let store = tx.objectStore('restaurants');
           restaurants.forEach(function (restaurant) {

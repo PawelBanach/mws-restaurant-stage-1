@@ -1,4 +1,4 @@
-var staticCacheName = 'restaurant-reviews-static-8';
+var staticCacheName = 'restaurant-reviews-static-9';
 
 self.addEventListener('install', function(event) {
   var urlsToCache = [
