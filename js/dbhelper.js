@@ -8,7 +8,7 @@ class DBHelper {
    */
   static get DATABASE_URL() {
     const port = 1337;
-    return `https://localhost:${port}/restaurants`;
+    return `http://localhost:${port}/restaurants`;
   }
 
   /**
@@ -16,7 +16,7 @@ class DBHelper {
    */
   static fetchRestaurants(callback) {
     DBHelper.showCachedRestaurants().then(function (restaurants) {
-      if (restaurants) callback(null, restaurants);
+      if (restaurants && restaurants.length !== 0) callback(null, restaurants);
       else { DBHelper.makeRequestForRestaurants(callback) }
     });
   }
