@@ -1,4 +1,4 @@
-var staticCacheName = 'restaurant-reviews-static-9';
+var staticCacheName = 'restaurant-reviews-static-20';
 
 self.addEventListener('install', function(event) {
   var urlsToCache = [
@@ -15,18 +15,20 @@ self.addEventListener('install', function(event) {
     '/images/10-270_thumbnail.jpg',
     '/images/default.png',
     '/css/styles.css',
-    '/js/dbhelper.js',
-    '/js/main.js',
-    '/js/restaurant_info.js',
-    '/index.html',
-    '/restaurant.html',
     'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700',
     'https://maps.gstatic.com/mapfiles/api-3/images/sv9.png',
     'https://maps.gstatic.com/mapfiles/api-3/images/mapcnt6.png',
     'https://maps.gstatic.com/mapfiles/api-3/images/google4.png',
     'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi2.png',
     'https://maps.gstatic.com/mapfiles/api-3/images/cb_scout5.png',
-    'https://maps.gstatic.com/mapfiles/openhand_8_8.cur'
+    'https://maps.gstatic.com/mapfiles/openhand_8_8.cur',
+    '/index.html',
+    '/restaurant.html',
+    '/js/dbhelper.js',
+    'js/idb.js',
+    '/js/main.js',
+    '/js/restaurant_info.js',
+    'js/service_worker.js',
   ];
 
   event.waitUntil(
