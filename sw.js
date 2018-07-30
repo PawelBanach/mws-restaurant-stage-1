@@ -1,7 +1,7 @@
-var staticCacheName = 'restaurant-reviews-static-20';
+const staticCacheName = 'mws-static-cache-1';
 
-self.addEventListener('install', function(event) {
-  var urlsToCache = [
+self.addEventListener('install', event => {
+  const urlsToCache = [
     '/',
     '/images/1-270_thumbnail.jpg',
     '/images/2-270_thumbnail.jpg',
@@ -32,19 +32,19 @@ self.addEventListener('install', function(event) {
   ];
 
   event.waitUntil(
-    caches.open(staticCacheName).then(function(cache) {
+    caches.open(staticCacheName).then( cache => {
       return cache.addAll(urlsToCache);
     })
   );
 });
 
-self.addEventListener('activate', function(event) {
+self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(function(cacheNames) {
+    caches.keys().then( cacheNames => {
       return Promise.all(
-        cacheNames.filter(function(cacheName) {
-          return cacheName.startsWith('restaurant-') && cacheName != staticCacheName;
-        }).map(function (cacheName) {
+        cacheNames.filter( cacheName => {
+          return cacheName.startsWith('restaurant-') && cacheName !== staticCacheName;
+        }).map( cacheName => {
           console.log(cacheName);
           return caches.delete(cacheName);
         })
@@ -53,11 +53,18 @@ self.addEventListener('activate', function(event) {
   );
 });
 
-self.addEventListener('fetch', function(event) {
+self.addEventListener('fetch', event => {
+  const requestUrl = new URL(event.request.url);
+  if (requestUrl.pathname.startsWith('/restaurants/')) return;
+
   event.respondWith(
-    caches.match(event.request).then(function (response) {
-      if (response) return response;
-      return fetch(event.request);
+    caches.open(staticCacheName).then( cache  => {
+      return cache.match(event.request).then( response => {
+        return response || fetch(event.request).then( response => {
+          cache.put(event.request, response.clone());
+          return response;
+        })
+      })
     })
-  );
+  )
 });
