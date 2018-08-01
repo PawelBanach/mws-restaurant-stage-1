@@ -51,6 +51,17 @@ class DBHelper {
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
+    DBHelper.showCachedRestaurants().then(function (restaurants) {
+      const restaurant = restaurants.find(restaurant => restaurant.id.toString() === id);
+      if (restaurant) callback(null, restaurant);
+      else { DBHelper.makeRequestForRestaurant(id, callback) }
+    });
+  }
+
+  /**
+   * Make request for all restaurants.
+   */
+  static makeRequestForRestaurant(id, callback) {
     let xhr = new XMLHttpRequest();
     xhr.open('GET', `${DBHelper.DATABASE_URL}/${id}`);
     xhr.onload = () => {
@@ -204,7 +215,6 @@ class DBHelper {
    */
   static showCachedRestaurants() {
     return DBHelper.openDatabase().then(function (db) {
-      // nie wrzucaj jeżeli restaurants są już ustawione
       if (!db) return;
       let index = db.transaction('restaurants').objectStore('restaurants');
 

@@ -1,4 +1,4 @@
-const staticCacheName = 'mws-static-cache-1';
+const staticCacheName = 'mws-static-cache-0';
 
 self.addEventListener('install', event => {
   const urlsToCache = [
