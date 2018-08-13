@@ -15,11 +15,11 @@
   <header>
     <!-- Beginning nav -->
     <nav>
-      <h2><a href="/">Restaurant Reviews</a></h2>
+      <h2><a rel="preconnect" href="/">Restaurant Reviews</a></h2>
     </nav>
     <!-- Beginning breadcrumb -->
     <ul id="breadcrumb" aria-label="breadcrumb" role="navigation">
-      <li><a href="/">Home</a></li>
+      <li><a rel="preconnect" href="/">Home</a></li>
     </ul>
     <!-- End breadcrumb -->
     <!-- End nav -->
@@ -45,6 +45,55 @@
     <!-- end restaurant -->
     <!-- Beginning reviews -->
     <section id="reviews-container">
+      <h3>Reviews</h3>
+      <form id="review-form" onsubmit="addReview(event)">
+        <fieldset class="review">
+          <legend>Add review</legend>
+
+          <div class="input-container">
+            <label class="full-width" for="reviewer-name">Name </label>
+            <input id="reviewer-name" name="name" type="text" required/>
+          </div>
+
+          <div class="input-container">
+            <label class="full-width">Rating </label>
+            <div class="raiting-option">
+              <input type="radio" id="raiting-1"
+                     name="raiting" value="1" required>
+              <label class="raiting-stars" for="raiting-1">&#9733;</label>
+            </div>
+            <div class="raiting-option">
+              <input type="radio" id="raiting-2"
+                     name="raiting" value="2" required>
+              <label class="raiting-stars" for="raiting-2">&#9733;&#9733;</label>
+            </div>
+            <div class="raiting-option">
+              <input type="radio" id="raiting-3"
+                     name="raiting" value="3" required>
+              <label class="raiting-stars" for="raiting-3">&#9733;&#9733;&#9733;</label>
+            </div>
+            <div class="raiting-option">
+              <input type="radio" id="raiting-4"
+                     name="raiting" value="4" required>
+              <label class="raiting-stars" for="raiting-4">&#9733;&#9733;&#9733;&#9733;</label>
+            </div>
+            <div class="raiting-option">
+              <input type="radio" id="raiting-5"
+                     name="raiting" value="5" required>
+              <label class="raiting-stars" for="raiting-5">&#9733;&#9733;&#9733;&#9733;&#9733;</label>
+            </div>
+          </div>
+
+          <div class="input-container">
+            <label class="full-width" for="review-comments">Comments </label>
+            <textarea id="review-comments" name="comments" required></textarea>
+          </div>
+
+
+          <div id="errors"></div>
+          <button type="submit" id="add-review-submit-button">Add Review</button>
+        </fieldset>
+      </form>
       <ul id="reviews-list"></ul>
     </section>
     <!-- End reviews -->
@@ -53,7 +102,7 @@
 
   <!-- Beginning footer -->
   <footer id="footer">
-    Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+    Copyright (c) 2017 <a rel="preconnect" href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
   </footer>
   <!-- End footer -->
 

@@ -1,8 +1,8 @@
 let restaurants,
   neighborhoods,
-  cuisines
-var map
-var markers = []
+  cuisines;
+var map;
+var markers = [];
 
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
@@ -145,7 +145,7 @@ createRestaurantHTML = (restaurant) => {
   const image = document.createElement('img');
   image.className = 'restaurant-img';
   image.alt = restaurant.alt;
-  image.src = DBHelper.imageUrlForRestaurant(restaurant) || 'images/default.png';
+  image.src = DBHelper.imageUrlForRestaurant(restaurant) || 'images/default.webp';
   li.append(image);
 
   const name = document.createElement('h3');

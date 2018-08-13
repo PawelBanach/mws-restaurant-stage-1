@@ -6,9 +6,14 @@ class DBHelper {
   /**
    * Database URL.
    */
-  static get DATABASE_URL() {
+  static get RESTAURANTS_URL() {
     const port = 1337;
     return `http://localhost:${port}/restaurants`;
+  }
+
+  static get REVIEWS_URL() {
+    const port = 1337;
+    return `http://localhost:${port}/reviews`;
   }
 
   /**
@@ -26,7 +31,7 @@ class DBHelper {
    */
   static makeRequestForRestaurants(callback) {
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
+    xhr.open('GET', DBHelper.RESTAURANTS_URL);
     xhr.onload = () => {
       if (xhr.status === 200) { // Got a success response from server!
         const restaurants = JSON.parse(xhr.responseText);
@@ -63,7 +68,7 @@ class DBHelper {
    */
   static makeRequestForRestaurant(id, callback) {
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', `${DBHelper.DATABASE_URL}/${id}`);
+    xhr.open('GET', `${DBHelper.RESTAURANTS_URL}/${id}`);
     xhr.onload = () => {
       if (xhr.status === 200) { // Got a success response from server!
         const restaurant = JSON.parse(xhr.responseText);
@@ -177,7 +182,7 @@ class DBHelper {
    */
   static imageUrlForRestaurant(restaurant) {
     // not all restaurants object has photograph
-    return (restaurant.photograph) ? (`/images/${restaurant.photograph}-270_thumbnail.jpg`) : null;
+    return (restaurant.photograph) ? (`/images/${restaurant.photograph}-270_thumbnail.webp`) : null;
   }
 
   /**
@@ -223,4 +228,45 @@ class DBHelper {
       });
     });
   }
+
+  /**
+   * Add review
+   */
+  static addReview(review, callback) {
+    debugger;
+    navigator.onLine ? DBHelper.createReview(review, callback) : DBHelper.addReviewWhenOnline(review, callback);
+  }
+
+  /**
+  * Add review when online
+  */
+  static addReviewWhenOnline(review, callback) {
+    debugger;
+    localStorage.setItem('review', JSON.stringify(review));
+    window.addEventListener('online', () => {
+      debugger;
+      let review = localStorage.getItem('review');
+      if(review) {
+        DBHelper.createReview(JSON.parse(review), callback);
+      }
+      localStorage.removeItem('review');
+    });
+    callback(null, 503)
+  }
+
+  /**
+   * Create review in database
+   */
+  static createReview(review, callback) {
+    const options = {
+      method: 'POST',
+      body: JSON.stringify(review),
+      headers: new Headers({ 'Content-Type': 'application/json'})
+    };
+    debugger;
+    fetch(DBHelper.REVIEWS_URL, options)
+      .then(response => { debugger; callback(response, response.status) })
+      .catch(response => { debugger; callback(response, response.status) });
+  }
+
 }

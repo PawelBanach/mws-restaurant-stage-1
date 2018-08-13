@@ -25,12 +25,12 @@ window.initMap = () => {
  */
 fetchRestaurantFromURL = (callback) => {
   if (self.restaurant) { // restaurant already fetched!
-    callback(null, self.restaurant)
+    callback(null, self.restaurant);
     return;
   }
   const id = getParameterByName('id');
   if (!id) { // no id found in URL
-    error = 'No restaurant id in URL'
+    error = 'No restaurant id in URL';
     callback(error, null);
   } else {
     DBHelper.fetchRestaurantById(id, (error, restaurant) => {
@@ -57,7 +57,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img';
-  image.src = DBHelper.imageUrlForRestaurant(restaurant) || 'images/default.png';
+  image.src = DBHelper.imageUrlForRestaurant(restaurant) || 'images/default.webp';
   image.alt = restaurant.alt;
 
   const cuisine = document.getElementById('restaurant-cuisine');
@@ -96,9 +96,6 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
  */
 fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');
-  const title = document.createElement('h3');
-  title.innerHTML = 'Reviews';
-  container.appendChild(title);
 
   if (!reviews) {
     const noReviews = document.createElement('p');
@@ -137,6 +134,51 @@ createReviewHTML = (review) => {
   return li;
 };
 
+addReview = (form) => {
+  event.preventDefault();
+  const formElements = form.target.elements;
+  let restaurantId = getParameterByName('id');
+  let { name, raiting, comments } = {};
+  for (let i = 0; i < formElements.length ;i++) {
+    if (formElements[i].id === 'reviewer-name') { name = formElements[i].value; }
+    if (formElements[i].id.startsWith('raiting') && formElements[i].checked) {
+      raiting = formElements[i].value;
+    }
+    if (formElements[i].id === 'review-comments') { comments = formElements[i].value; }
+  }
+
+  const newReview = {
+    restaurant_id: parseInt(restaurantId),
+    name: name,
+    rating: parseInt(raiting),
+    comments: comments,
+    date: (new Date ()).toDateString().substr(4, 14),
+  };
+
+  DBHelper.addReview(newReview, (response, status) => {
+    switch(status) {
+      case 201:
+        createPopup('success', 'Review added! Thank you for the feedback.');
+        console.log('Review added');
+        break;
+      case 422:
+        createPopup('error', `Error! Review cannot be added due: ${response.body}`);
+        console.log('Error', response);
+        break;
+      case 503:
+        createPopup('info', 'The server is offline. The review will be added as soon as the connection has been established.');
+        console.log('Server offline');
+        break;
+      default:
+        createPopup('error', 'Unrecognized action happened.');
+        console.log('Unrecognized error');
+        break;
+    }
+  });
+  document.getElementById('reviews-list').appendChild(createReviewHTML(newReview));
+  document.getElementById('review-form').reset();
+};
+
 /**
  * Add restaurant name to the breadcrumb navigation menu
  */
@@ -161,4 +203,32 @@ getParameterByName = (name, url) => {
   if (!results[2])
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
+};
+
+/**
+ * Create popup window
+ */
+
+createPopup = (type, message) => {
+  const closeButtonContainer = document.createElement('div');
+  closeButtonContainer.classList.add('close-button-container');
+  closeButtonContainer.innerHTML = "<a onclick='destroyPopup()'>X</a>";
+  const popupDiv = document.createElement('div');
+  popupDiv.classList.add('popup');
+  popupDiv.classList.add(type);
+  popupDiv.setAttribute('id', 'popup');
+  const span = document.createElement('span');
+  span.innerHTML = message;
+  popupDiv.appendChild(closeButtonContainer);
+  popupDiv.appendChild(span);
+  document.getElementById('footer').appendChild(popupDiv);
+};
+
+
+/**
+ * Destroy popup window
+ */
+
+destroyPopup = () => {
+  document.getElementById('popup').remove();
 };

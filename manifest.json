@@ -3,37 +3,37 @@
   "short_name": "MWS",
   "icons": [
     {
-      "src": "images/mws-icon.png",
+      "src": "images/mws-icon.webp",
       "sizes": "96x96",
-      "type": "image/png",
+      "type": "image/webp",
       "density": 0.75
     },
     {
-      "src": "images/mws-icon.png",
+      "src": "images/mws-icon.webp",
       "sizes": "144x144",
-      "type": "image/png",
+      "type": "image/webp",
       "density": 0.75
     },
     {
-      "src": "images/mws-icon.png",
+      "src": "images/mws-icon.webp",
       "sizes": "196x196",
-      "type": "image/png",
+      "type": "image/webp",
       "density": 0.75
     },
     {
-      "src": "images/mws-icon.png",
+      "src": "images/mws-icon.webp",
       "sizes": "256x256",
-      "type": "image/png"
+      "type": "image/webp"
     },
     {
-      "src": "images/mws-icon.png",
+      "src": "images/mws-icon.webp",
       "sizes": "384x384",
-      "type": "image/png"
+      "type": "image/webp"
     },
     {
-      "src": "images/mws-icon.png",
+      "src": "images/mws-icon.webp",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/webp"
     }
   ],
   "start_url": "index.html",
