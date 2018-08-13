@@ -233,7 +233,6 @@ class DBHelper {
    * Add review
    */
   static addReview(review, callback) {
-    debugger;
     navigator.onLine ? DBHelper.createReview(review, callback) : DBHelper.addReviewWhenOnline(review, callback);
   }
 
@@ -241,10 +240,8 @@ class DBHelper {
   * Add review when online
   */
   static addReviewWhenOnline(review, callback) {
-    debugger;
     localStorage.setItem('review', JSON.stringify(review));
     window.addEventListener('online', () => {
-      debugger;
       let review = localStorage.getItem('review');
       if(review) {
         DBHelper.createReview(JSON.parse(review), callback);
@@ -263,10 +260,10 @@ class DBHelper {
       body: JSON.stringify(review),
       headers: new Headers({ 'Content-Type': 'application/json'})
     };
-    debugger;
+
     fetch(DBHelper.REVIEWS_URL, options)
-      .then(response => { debugger; callback(response, response.status) })
-      .catch(response => { debugger; callback(response, response.status) });
+      .then(response => { callback(response, response.status) })
+      .catch(response => { callback(response, response.status) });
   }
 
 }
