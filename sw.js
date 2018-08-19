@@ -1,4 +1,4 @@
-const staticCacheName = 'mws-static-cache-1008';
+const staticCacheName = 'mws-cache-1';
 
 self.addEventListener('install', event => {
   const urlsToCache = [
@@ -15,9 +15,6 @@ self.addEventListener('install', event => {
     '/images/10-270_thumbnail.webp',
     '/images/default.webp',
     '/css/styles.css',
-    '/css/styles-screen-501-800.css',
-    '/css/styles-screen-500.css',
-    '/css/styles-screen-800.css',
     'https://maps.gstatic.com/mapfiles/api-3/images/sv9.png',
     'https://maps.gstatic.com/mapfiles/api-3/images/mapcnt6.png',
     'https://maps.gstatic.com/mapfiles/api-3/images/google4.png',
@@ -27,10 +24,12 @@ self.addEventListener('install', event => {
     '/index.html',
     '/restaurant.html',
     '/js/dbhelper.js',
-    'js/idb.js',
+    '/js/idb.js',
     '/js/main.js',
     '/js/restaurant_info.js',
-    'js/service_worker.js',
+    '/js/service_worker.js',
+    '/js/maphelper.js',
+    '/js/popup.js',
   ];
 
   event.waitUntil(

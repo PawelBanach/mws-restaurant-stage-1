@@ -70,7 +70,7 @@ fillCuisinesHTML = (cuisines = self.cuisines) => {
 /**
  * Initialize Google map, called from HTML.
  */
-window.initMap = () => {
+initMap = () => {
   let loc = {
     lat: 40.722216,
     lng: -73.987501
@@ -108,7 +108,7 @@ updateRestaurants = () => {
       fillRestaurantsHTML();
     }
   })
-}
+};
 
 /**
  * Clear current restaurants, their HTML and remove their map markers.
@@ -123,7 +123,7 @@ resetRestaurants = (restaurants) => {
   self.markers.forEach(m => m.setMap(null));
   self.markers = [];
   self.restaurants = restaurants;
-}
+};
 
 /**
  * Create all restaurants HTML and add them to the webpage.
@@ -134,7 +134,7 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
     ul.append(createRestaurantHTML(restaurant));
   });
   addMarkersToMap();
-}
+};
 
 /**
  * Create restaurant HTML.
@@ -163,10 +163,16 @@ createRestaurantHTML = (restaurant) => {
   const more = document.createElement('a');
   more.innerHTML = 'View Details';
   more.href = DBHelper.urlForRestaurant(restaurant);
-  li.append(more)
+  li.append(more);
+
+  const favourite = document.createElement('a');
+  favourite.setAttribute('id', restaurant.id);
+  favourite.onclick = toogleFavourite;
+  li.append(favourite);
+  restaurant.is_favorite ? markFavourite(favourite) : markUnfavourite(favourite);
 
   return li
-}
+};
 
 /**
  * Add markers for current restaurants to the map.
@@ -180,4 +186,42 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     });
     self.markers.push(marker);
   });
-}
+};
+
+markFavourite = (element) => {
+  element.parentElement.setAttribute('class', 'favourite');
+  element.innerHTML = 'Unfavourite';
+  element.setAttribute('favourite', 'true');
+};
+
+markUnfavourite = (element) => {
+  element.parentElement.removeAttribute('class');
+  element.innerHTML = 'Favourite';
+  element.setAttribute('favourite', 'false');
+};
+
+
+toogleFavourite = (e) => {
+  const favourite = e.target.getAttribute('favourite') === 'true';
+  const id = e.target.getAttribute('id');
+  DBHelper.toogleFavourite(id, favourite, (response, status) => {
+    switch(status) {
+      case 200:
+        console.log('Toogle favourite');
+        favourite ? markUnfavourite(e.target) : markFavourite(e.target);
+        break;
+      case 422:
+        Popup.createPopup('error', `Error! Cannot toogle favourite: ${response.body}`);
+        console.log('Error', response);
+        break;
+      case 503:
+        Popup.createPopup('info', 'The server is offline.');
+        console.log('Server offline');
+        break;
+      default:
+        Popup.createPopup('error', 'Unrecognized action happened.');
+        console.log('Unrecognized error');
+        break;
+    }
+  });
+};

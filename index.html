@@ -21,8 +21,9 @@
 
 <main id="maincontent" role="main">
     <section id="map-container">
+        <button id= "show-map-button" class="map-button" onclick="MapHelper.showMap()">Show Map</button>
         <!-- https://stackoverflow.com/questions/44712753/what-is-a-suitable-wai-aria-role-attribute-for-a-map-element -->
-        <div tabindex="0" id="map" aria-label="Map with restaurants" title="Restaurant map" role="presentation"></div>
+        <div tabindex="0" id="map" aria-label="Map with restaurants" title="Restaurant map" role="presentation" hidden></div>
     </section>
     <section>
         <div class="filter-options">
@@ -40,6 +41,8 @@
 
 <script type="application/javascript" charset="utf-8" src="js/idb.js"></script>
 <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
+<script type="text/javascript" src="js/maphelper.js"></script>
+<script type="text/javascript" src="js/popup.js"></script>
 <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
 <script type="application/javascript" charset="utf-8" src="js/service_worker.js"></script>
 <script async defer

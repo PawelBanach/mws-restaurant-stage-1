@@ -30,8 +30,7 @@ fetchRestaurantFromURL = (callback) => {
   }
   const id = getParameterByName('id');
   if (!id) { // no id found in URL
-    error = 'No restaurant id in URL';
-    callback(error, null);
+    callback('No restaurant id in URL', null);
   } else {
     DBHelper.fetchRestaurantById(id, (error, restaurant) => {
       self.restaurant = restaurant;
@@ -40,7 +39,7 @@ fetchRestaurantFromURL = (callback) => {
         return;
       }
       fillRestaurantHTML();
-      callback(null, restaurant)
+      callback(null, restaurant);
     });
   }
 };
@@ -67,8 +66,10 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
-  // fill reviews
-  fillReviewsHTML();
+
+  DBHelper.fetchAllRestaurantReviews(restaurant.id, (error, reviews) =>{
+    fillReviewsHTML(reviews);
+  });
 };
 
 /**
@@ -99,6 +100,7 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
 
   if (!reviews) {
     const noReviews = document.createElement('p');
+    noReviews.setAttribute('id', 'no-review');
     noReviews.innerHTML = 'No reviews yet!';
     container.appendChild(noReviews);
     return;
@@ -158,25 +160,27 @@ addReview = (form) => {
   DBHelper.addReview(newReview, (response, status) => {
     switch(status) {
       case 201:
-        createPopup('success', 'Review added! Thank you for the feedback.');
+        Popup.createPopup('success', 'Review added! Thank you for the feedback.');
         console.log('Review added');
         break;
       case 422:
-        createPopup('error', `Error! Review cannot be added due: ${response.body}`);
+        Popup.createPopup('error', `Error! Review cannot be added due: ${response.body}`);
         console.log('Error', response);
         break;
       case 503:
-        createPopup('info', 'The server is offline. The review will be added as soon as the connection has been established.');
+        Popup.createPopup('info', 'The server is offline. The review will be added as soon as the connection has been established.');
         console.log('Server offline');
         break;
       default:
-        createPopup('error', 'Unrecognized action happened.');
+        Popup.createPopup('error', 'Unrecognized action happened.');
         console.log('Unrecognized error');
         break;
     }
   });
   document.getElementById('reviews-list').appendChild(createReviewHTML(newReview));
   document.getElementById('review-form').reset();
+  const noReview = document.getElementById('no-review');
+  if(noReview) noReview.remove();
 };
 
 /**
@@ -203,32 +207,4 @@ getParameterByName = (name, url) => {
   if (!results[2])
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
-};
-
-/**
- * Create popup window
- */
-
-createPopup = (type, message) => {
-  const closeButtonContainer = document.createElement('div');
-  closeButtonContainer.classList.add('close-button-container');
-  closeButtonContainer.innerHTML = "<a onclick='destroyPopup()'>X</a>";
-  const popupDiv = document.createElement('div');
-  popupDiv.classList.add('popup');
-  popupDiv.classList.add(type);
-  popupDiv.setAttribute('id', 'popup');
-  const span = document.createElement('span');
-  span.innerHTML = message;
-  popupDiv.appendChild(closeButtonContainer);
-  popupDiv.appendChild(span);
-  document.getElementById('footer').appendChild(popupDiv);
-};
-
-
-/**
- * Destroy popup window
- */
-
-destroyPopup = () => {
-  document.getElementById('popup').remove();
 };
