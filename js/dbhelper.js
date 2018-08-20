@@ -20,16 +20,6 @@ class DBHelper {
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    DBHelper.showCachedRestaurants().then(restaurants => {
-      if (restaurants && restaurants.length !== 0) callback(null, restaurants);
-      else { DBHelper.makeRequestForRestaurants(callback) }
-    });
-  }
-
-  /**
-   * Make request for all restaurants.
-   */
-  static makeRequestForRestaurants(callback) {
     let xhr = new XMLHttpRequest();
     xhr.open('GET', DBHelper.RESTAURANTS_URL);
     xhr.onload = () => {
@@ -44,9 +34,15 @@ class DBHelper {
           });
         });
         callback(null, restaurants);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        callback(error, null);
+      } else {
+        // Oops!. Got an error from server.
+        DBHelper.showCachedRestaurants().then(restaurants => {
+          if (restaurants && restaurants.length !== 0) callback(null, restaurants);
+          else {
+            const error = (`Request failed. Returned status of ${xhr.status}`);
+            callback(error, null);
+          }
+        });
       }
     };
     xhr.send();
@@ -56,45 +52,31 @@ class DBHelper {
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
-    DBHelper.showCachedRestaurants().then(restaurants => {
-      const restaurant = restaurants.find(restaurant => restaurant.id.toString() === id);
-      if (restaurant) callback(null, restaurant);
-      else { DBHelper.makeRequestForRestaurant(id, callback) }
-    });
-  }
-
-  /**
-   *
-   */
-  static fetchAllRestaurantReviews(id, callback) {
-    DBHelper.showCachedReviewsByRestaurantId(id).then(reviews => {
-      if (reviews && reviews.length !== 0) callback(null, reviews);
-      else { DBHelper.makeRequestForRestaurantReviews(id, callback) }
-    });
-  }
-
-  /**
-   * Make request for all restaurants.
-   */
-  static makeRequestForRestaurant(id, callback) {
     let xhr = new XMLHttpRequest();
     xhr.open('GET', `${DBHelper.RESTAURANTS_URL}/${id}`);
     xhr.onload = () => {
       if (xhr.status === 200) { // Got a success response from server!
         const restaurant = JSON.parse(xhr.responseText);
         restaurant ? callback(null, restaurant) : callback('Restaurant does not exist', null);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        callback(error, null);
+      } else {
+        // Oops!. Got an error from server.
+        DBHelper.showCachedRestaurants().then(restaurants => {
+          const restaurant = restaurants.find(restaurant => restaurant.id.toString() === id);
+          if (restaurant) callback(null, restaurant);
+          else {
+            const error = (`Request failed. Returned status of ${xhr.status}`);
+            callback(error, null);
+          }
+        });
       }
     };
     xhr.send();
   }
 
   /**
-   * Make request for all restaurant reviews.
+   * Fetch all restaurant reviews
    */
-  static makeRequestForRestaurantReviews(id, callback) {
+  static fetchAllRestaurantReviews(id, callback) {
     let xhr = new XMLHttpRequest();
     xhr.open('GET', `${DBHelper.REVIEWS_URL}/?restaurant_id=${id}`);
     xhr.onload = () => {
@@ -111,9 +93,15 @@ class DBHelper {
           });
           callback(null, reviews)
         } else callback('There is no reviews for restaurant', null);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        callback(error, null);
+      } else {
+        // Oops!. Got an error from server.
+        DBHelper.showCachedReviewsByRestaurantId(id).then(reviews => {
+          if (reviews && reviews.length !== 0) callback(null, reviews);
+          else {
+            const error = (`Request failed. Returned status of ${xhr.status}`);
+            callback(error, null);
+          }
+        });
       }
     };
     xhr.send();
@@ -325,7 +313,7 @@ class DBHelper {
       headers: new Headers({ 'Content-Type': 'application/json'})
     };
 
-    fetch(`${DBHelper.RESTAURANTS_URL}/${id}/?is_favourite=${favourite}`, options)
+    fetch(`${DBHelper.RESTAURANTS_URL}/${id}/?is_favourite=${!favourite}`, options)
       .then(response => callback(response, response.status))
       .catch(response => callback(response, 503));
   }
