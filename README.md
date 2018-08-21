@@ -4,7 +4,7 @@
 
 ### Preparing environment
 
-Before starting server, run: `npm isntall` it will install all needed dependencies.
+Before starting server, run: `npm install` it will install all needed dependencies.
 
 ### Starting project
 
