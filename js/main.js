@@ -169,7 +169,7 @@ createRestaurantHTML = (restaurant) => {
   favourite.setAttribute('id', restaurant.id);
   favourite.onclick = toogleFavourite;
   li.append(favourite);
-  restaurant.is_favorite ? markFavourite(favourite) : markUnfavourite(favourite);
+  restaurant.is_favourite ? markFavourite(favourite) : markUnfavourite(favourite);
 
   return li
 };
